@@ -33,17 +33,17 @@ def load_file():
                     loader = RapidOCRDocLoader(file_path=file)
                 elif ext == '.pdf':
                     loader = RapidOCRPDFLoader(file_path=file)
-                elif ext == '.ofd':
-                    converted_pdf_path = read_ofd(str(file.resolve()))
-                    loader = RapidOCRPDFLoader(file_path=converted_pdf_path)
+                # elif ext == '.ofd':
+                #     converted_pdf_path = read_ofd(str(file.resolve()))
+                #     loader = RapidOCRPDFLoader(file_path=converted_pdf_path)
                 else:
                     loader = None
 
                 if loader:
                     loaded = loader.load()
-                    if converted_pdf_path:
-                        os.remove(converted_pdf_path)
-                        converted_pdf_path = None
+                    # if converted_pdf_path:
+                    #     os.remove(converted_pdf_path)
+                    #     converted_pdf_path = None
                     documents.extend([{"content":loaded_doc.page_content,"filename":file.stem,"filepath":str(file)} for loaded_doc in loaded])
             except (OSError, UnicodeDecodeError) as e:
                 logger.error(f"Error reading file: {file}", e)

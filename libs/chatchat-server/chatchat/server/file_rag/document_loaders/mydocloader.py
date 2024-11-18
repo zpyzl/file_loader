@@ -38,13 +38,13 @@ class RapidOCRDocLoader(UnstructuredFileLoader):
                     elif isinstance(child, CT_Tbl):
                         yield Table(child, parent)
 
-            b_unit = tqdm.tqdm(
-                total=len(doc.paragraphs) + len(doc.tables),
-                desc="RapidOCRDocLoader block index: 0",
-            )
+            # b_unit = tqdm.tqdm(
+            #     total=len(doc.paragraphs) + len(doc.tables),
+            #     desc="RapidOCRDocLoader block index: 0",
+            # )
             for i, block in enumerate(iter_block_items(doc)):
-                b_unit.set_description("RapidOCRDocLoader  block index: {}".format(i))
-                b_unit.refresh()
+                # b_unit.set_description("RapidOCRDocLoader  block index: {}".format(i))
+                # b_unit.refresh()
                 if isinstance(block, Paragraph):
                     resp += block.text.strip() + "\n"
                     images = block._element.xpath(".//pic:pic")  # 获取所有图片
@@ -64,7 +64,7 @@ class RapidOCRDocLoader(UnstructuredFileLoader):
                         for cell in row.cells:
                             for paragraph in cell.paragraphs:
                                 resp += paragraph.text.strip() + "\n"
-                b_unit.update(1)
+                # b_unit.update(1)
             return resp
 
         text = doc2text(self.file_path)
