@@ -44,14 +44,14 @@ class RapidOCRPDFLoader(UnstructuredFileLoader):
             doc = fitz.open(filepath)
             resp = ""
 
-            b_unit = tqdm.tqdm(
-                total=doc.page_count, desc="RapidOCRPDFLoader context page index: 0"
-            )
+            # b_unit = tqdm.tqdm(
+            #     total=doc.page_count, desc="RapidOCRPDFLoader context page index: 0"
+            # )
             for i, page in enumerate(doc):
-                b_unit.set_description(
-                    "RapidOCRPDFLoader context page index: {}".format(i)
-                )
-                b_unit.refresh()
+                # b_unit.set_description(
+                #     "RapidOCRPDFLoader context page index: {}".format(i)
+                # )
+                # b_unit.refresh()
                 text = page.get_text("")
                 resp += text + "\n"
 
@@ -87,7 +87,7 @@ class RapidOCRPDFLoader(UnstructuredFileLoader):
                             resp += "\n".join(ocr_result)
 
                 # 更新进度
-                b_unit.update(1)
+                # b_unit.update(1)
             return resp
 
         text = pdf2text(self.file_path)
