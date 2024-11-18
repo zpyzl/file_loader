@@ -3,6 +3,7 @@ import sys
 from pathlib import Path
 
 from flask import Flask, request, jsonify
+from tqdm import tqdm
 
 sys.path.append(os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))))
@@ -22,10 +23,8 @@ DIRPATH = r"D:\test_rag_doc"
 def load_file():
     directory = request.json.get('dir_path')
     documents = []
-    pdfs, docs = [], []
-    loader = None
     converted_pdf_path = None
-    for file in Path(directory).rglob('*'):
+    for file in tqdm(Path(directory).rglob('*')):
         if file.is_file():
             try:
                 logger.info(f"Processing {file}")
@@ -44,6 +43,7 @@ def load_file():
                     loaded = loader.load()
                     if converted_pdf_path:
                         os.remove(converted_pdf_path)
+                        converted_pdf_path = None
                     documents.extend([{"content":loaded_doc.page_content,"filename":file.stem,"filepath":str(file)} for loaded_doc in loaded])
             except (OSError, UnicodeDecodeError) as e:
                 logger.error(f"Error reading file: {file}", e)
