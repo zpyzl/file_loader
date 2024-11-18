@@ -4,8 +4,8 @@ from pathlib import Path
 
 from flask import Flask, request, jsonify
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(
-    os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))))))
+sys.path.append(os.path.dirname(os.path.dirname(
+    os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))))
 
 from chatchat.server.file_rag.document_loaders import RapidOCRDocLoader, RapidOCRPDFLoader
 from chatchat.server.file_rag.document_loaders.ofd_loader import read_ofd
