@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ofd:Res xmlns:ofd="http://blog.yuanhaiying.cn" BaseLoc="Res">
+	<ofd:MultiMedias>
+		<ofd:MultiMedia ID="3" Type="Image">
+			<ofd:MediaFile>Image_0.jpg</ofd:MediaFile>
+			<res_uuid>0</res_uuid>
+		</ofd:MultiMedia>
+	</ofd:MultiMedias>
+</ofd:Res>
