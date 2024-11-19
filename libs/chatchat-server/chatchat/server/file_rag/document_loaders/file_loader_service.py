@@ -21,36 +21,34 @@ DIRPATH = r"D:\test_rag_doc"
 
 @app.route('/load_file', methods=['GET', 'POST'])
 def load_file():
-    directory = request.json.get('dir_path')
+    filepath = request.json.get('file_path')
     documents = []
-    converted_pdf_path = None
-    for file in tqdm(Path(directory).rglob('*')):
-        if file.is_file():
-            try:
-                logger.info(f"Processing {file}")
-                ext = file.suffix
-                if ext in ['.doc', '.docx']:
-                    loader = RapidOCRDocLoader(file_path=file)
-                elif ext == '.pdf':
-                    loader = RapidOCRPDFLoader(file_path=file)
-                # elif ext == '.ofd':
-                #     converted_pdf_path = read_ofd(str(file.resolve()))
-                #     loader = RapidOCRPDFLoader(file_path=converted_pdf_path)
-                else:
-                    loader = None
+    file = Path(filepath)
+    try:
+        logger.info(f"Processing {filepath}")
+        ext = file.suffix
+        if ext in ['.doc', '.docx']:
+            loader = RapidOCRDocLoader(file_path=file)
+        elif ext == '.pdf':
+            loader = RapidOCRPDFLoader(file_path=file)
+        # elif ext == '.ofd':
+        #     converted_pdf_path = read_ofd(str(file.resolve()))
+        #     loader = RapidOCRPDFLoader(file_path=converted_pdf_path)
+        else:
+            loader = None
 
-                if loader:
-                    loaded = loader.load()
-                    # if converted_pdf_path:
-                    #     os.remove(converted_pdf_path)
-                    #     converted_pdf_path = None
-                    documents.extend([{"content":loaded_doc.page_content,"filename":file.stem,"filepath":str(file)} for loaded_doc in loaded])
-            except (OSError, UnicodeDecodeError) as e:
-                logger.error(f"Error reading file: {file}", e)
-                logger.exception(e)
-            except Exception as e:
-                logger.error(f"Unhandled exception: {file}", e)
-                logger.exception(e)
+        if loader:
+            loaded = loader.load()
+            # if converted_pdf_path:
+            #     os.remove(converted_pdf_path)
+            #     converted_pdf_path = None
+            documents.extend([{"content":loaded_doc.page_content,"filename":file.stem,"filepath":str(file)} for loaded_doc in loaded])
+    except (OSError, UnicodeDecodeError) as e:
+        logger.error(f"Error reading file: {file}", e)
+        logger.exception(e)
+    except Exception as e:
+        logger.error(f"Unhandled exception: {file}", e)
+        logger.exception(e)
     return jsonify({"code":200,"data":documents})
 
 def load(loader, texts):
