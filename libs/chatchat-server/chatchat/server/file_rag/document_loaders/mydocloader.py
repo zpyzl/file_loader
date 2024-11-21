@@ -74,6 +74,6 @@ class RapidOCRDocLoader(UnstructuredFileLoader):
 
 
 if __name__ == "__main__":
-    loader = RapidOCRDocLoader(file_path="../tests/samples/ocr_test.docx")
+    loader = RapidOCRDocLoader(file_path=r"C:\Users\zpyzl\PycharmProjects\Langchain-Chatchat-master\libs\chatchat-server\tests\samples\ocr_test.docx")
     docs = loader.load()
     print(docs)

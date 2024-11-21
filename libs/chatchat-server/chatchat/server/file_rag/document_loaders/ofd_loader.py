@@ -15,7 +15,7 @@ def read_ofd(file_path):
     ofd.del_data()
     dir_path = os.path.split(file_path)[0]
 
-    pdf_file_path = os.path.join(dir_path, f"{file_prefix}.pdf")
+    pdf_file_path = os.path.join(dir_path, f"b.pdf")
     with open(pdf_file_path, "wb") as f:
         f.write(pdf_bytes)
     return pdf_file_path

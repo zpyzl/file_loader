@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 from pathlib import Path
 
 from flask import Flask, request, jsonify
@@ -24,13 +25,14 @@ def load_file():
     filepath = request.json.get('file_path')
     documents = []
     file = Path(filepath)
+    start = time.time()
     try:
         logger.info(f"Processing {filepath}")
         ext = file.suffix
         if ext in ['.doc', '.docx']:
-            loader = RapidOCRDocLoader(file_path=file)
+            loader = RapidOCRDocLoader(file_path=file,strategy='fast')
         elif ext == '.pdf':
-            loader = RapidOCRPDFLoader(file_path=file)
+            loader = RapidOCRPDFLoader(file_path=file,strategy='fast')
         # elif ext == '.ofd':
         #     converted_pdf_path = read_ofd(str(file.resolve()))
         #     loader = RapidOCRPDFLoader(file_path=converted_pdf_path)
@@ -49,6 +51,7 @@ def load_file():
     except Exception as e:
         logger.error(f"Unhandled exception: {file}", e)
         logger.exception(e)
+    logger.info(f"Load {filepath} cost {time.time() - start:.2f} seconds")
     return jsonify({"code":200,"data":documents})
 
 def load(loader, texts):
