@@ -26,6 +26,7 @@ def load_file():
     documents = []
     file = Path(filepath)
     start = time.time()
+    code = 500
     try:
         logger.info(f"Processing {filepath}")
         ext = file.suffix
@@ -45,14 +46,17 @@ def load_file():
             #     os.remove(converted_pdf_path)
             #     converted_pdf_path = None
             documents.extend([{"content":loaded_doc.page_content,"filename":file.stem,"filepath":str(file)} for loaded_doc in loaded])
+            code = 200
     except (OSError, UnicodeDecodeError) as e:
         logger.error(f"Error reading file: {file}", e)
         logger.exception(e)
+        code = 500
     except Exception as e:
         logger.error(f"Unhandled exception: {file}", e)
         logger.exception(e)
+        code = 500
     logger.info(f"Load {filepath} cost {time.time() - start:.2f} seconds")
-    return jsonify({"code":200,"data":documents})
+    return jsonify({"code":code,"data":documents})
 
 def load(loader, texts):
     docs = loader.load()
