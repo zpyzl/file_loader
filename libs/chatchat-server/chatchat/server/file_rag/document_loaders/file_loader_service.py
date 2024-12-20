@@ -3,7 +3,6 @@ import sys
 import time
 from pathlib import Path
 
-import win32com.client
 from flask import Flask, request, jsonify
 from tika import parser
 from tqdm import tqdm
@@ -77,18 +76,6 @@ def read_wps(file_path):
     text = parsed.get('content','')
     return text
 
-
-def read_doc(file_path):
-    word = win32com.client.Dispatch("Word.Application")
-    word.Visible=False #让 Word 在后台运行
-    doc = word.Documents.open(file_path)
-    content = ""
-    #查看每个段落的内容
-    for i, paragraph in enumerate(doc.Paragraphs):
-        content += paragraph.Range.Text + "\n"
-    doc.Close()
-    word.Quit()
-    return content
 
 if __name__ == '__main__':
     app.run()
