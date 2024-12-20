@@ -3,7 +3,9 @@ import sys
 import time
 from pathlib import Path
 
+import win32com.client
 from flask import Flask, request, jsonify
+from tika import parser
 from tqdm import tqdm
 
 sys.path.append(os.path.dirname(os.path.dirname(
@@ -30,7 +32,7 @@ def load_file():
     try:
         logger.info(f"Processing {filepath}")
         ext = file.suffix
-        if ext in ['.doc', '.docx']:
+        if ext in ['.docx']:
             loader = RapidOCRDocLoader(file_path=file,strategy='fast')
         elif ext == '.pdf':
             loader = RapidOCRPDFLoader(file_path=file,strategy='fast')
@@ -47,6 +49,12 @@ def load_file():
             #     converted_pdf_path = None
             documents.extend([{"content":loaded_doc.page_content,"filename":file.stem,"filepath":str(file)} for loaded_doc in loaded])
             code = 200
+        elif ext in ['.wps','.doc']:
+            content = read_wps(filepath)
+            documents.append({"content": content, "filename": file.stem, "filepath": str(file)})
+            code = 200
+        else:
+            code = 500
     except (OSError, UnicodeDecodeError) as e:
         logger.error(f"Error reading file: {file}", e)
         logger.exception(e)
@@ -64,6 +72,23 @@ def load(loader, texts):
         texts.extend([doc.page_content for doc in docs])
     return texts
 
+def read_wps(file_path):
+    parsed = parser.from_file(file_path)
+    text = parsed.get('content','')
+    return text
+
+
+def read_doc(file_path):
+    word = win32com.client.Dispatch("Word.Application")
+    word.Visible=False #让 Word 在后台运行
+    doc = word.Documents.open(file_path)
+    content = ""
+    #查看每个段落的内容
+    for i, paragraph in enumerate(doc.Paragraphs):
+        content += paragraph.Range.Text + "\n"
+    doc.Close()
+    word.Quit()
+    return content
 
 if __name__ == '__main__':
     app.run()
