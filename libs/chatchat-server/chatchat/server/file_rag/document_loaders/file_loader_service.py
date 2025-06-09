@@ -31,6 +31,7 @@ def load_file():
     try:
         logger.info(f"Processing {filepath}")
         ext = file.suffix
+        print(f"{file.stat().st_size}")
         if ext in ['.docx']:
             loader = RapidOCRDocLoader(file_path=file,strategy='fast')
         elif ext == '.pdf':
